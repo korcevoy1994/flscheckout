@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { Input } from './input'
 import { Label } from './label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from './drawer'
 import { useBooking } from '@/contexts/BookingContext'
 
 interface CountryOption {
@@ -695,47 +696,33 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
         </div>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          {/* Overlay */}
-          <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
-          />
-          
-          {/* Modal Content */}
-          <div className={cn(
-            "relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-t-2xl shadow-2xl",
-            "animate-in slide-in-from-bottom-full duration-300 ease-out",
-            "max-h-[85vh] overflow-y-auto"
-          )}>
-            {/* Header */}
-            <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 rounded-t-2xl">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Adult Passenger Details
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Please fill in all required information
-                  </p>
+      {/* Drawer */}
+      <Drawer open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <DrawerTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Adult Passenger Details
+                </DrawerTitle>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Please fill in all required information
+                </p>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsModalOpen(false)}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
+                <DrawerClose asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </DrawerClose>
               </div>
-              
-              {/* Drag indicator */}
-              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
-            </div>
+          </DrawerHeader>
 
-            {/* Content */}
+          {/* Content */}
+          <div className="overflow-y-auto flex-1">
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="space-y-6">
                 {/* Title and Gender */}
@@ -1115,8 +1102,8 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
               </div>
             </form>
           </div>
-        </div>
-      )}
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }

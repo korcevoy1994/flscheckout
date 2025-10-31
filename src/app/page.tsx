@@ -3,6 +3,8 @@
 import React, { useState } from 'react'
 import CheckoutSteps from "@/components/ui/checkout-steps"
 import BookingSummary from "@/components/ui/booking-summary"
+import BookingDrawer from "@/components/ui/booking-drawer"
+import MobileBookingBar from "@/components/ui/mobile-booking-bar"
 import { FlightDetails } from "@/components/ui/flight-details"
 import PassengerDetails from "@/components/ui/passenger-details"
 import { ContactInformation } from "@/components/ui/contact-information"
@@ -15,6 +17,7 @@ import { useBooking } from "@/contexts/BookingContext"
 export default function Home() {
   const { bookingState, setCurrentStep } = useBooking()
   const { currentStep } = bookingState
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [selectedProtection, setSelectedProtection] = useState<string>('')
 
   const handleContinueToProtection = () => {
@@ -54,9 +57,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground transition-colors duration-200 pt-8">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 pb-24 lg:pb-0">
           {/* Left column - CheckoutSteps and current step content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             <CheckoutSteps currentStep={currentStep} />
             
             {/* Step 1: Flight Details */}
@@ -70,9 +73,9 @@ export default function Home() {
                 {/* Who's travelling section */}
                 <div>
                   <div className="mb-3">
-                    <h2 className="text-base font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-                      WHO'S TRAVELLING?
-                    </h2>
+                    <h2 className="text-xl font-bold text-gray-600 dark:text-white uppercase tracking-wide">
+          WHO'S TRAVELLING?
+        </h2>
                   </div>
                   
                   {/* Passengers grid */}
@@ -163,13 +166,22 @@ export default function Home() {
             )}
           </div>
           
-          {/* Right column - BookingSummary */}
-          <div className="lg:col-span-1">
+          {/* Right column - BookingSummary (Desktop only) */}
+          <div className="hidden lg:block lg:col-span-1">
             <div className="sticky top-8">
               <BookingSummary />
             </div>
           </div>
         </div>
+        
+        {/* Mobile Bottom Bar */}
+        <MobileBookingBar onOpenDrawer={() => setIsDrawerOpen(true)} />
+        
+        {/* Mobile Drawer */}
+        <BookingDrawer 
+          isOpen={isDrawerOpen} 
+          onClose={() => setIsDrawerOpen(false)} 
+        />
       </div>
     </main>
   )

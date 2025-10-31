@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { Input } from './input'
 import { Label } from './label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from './drawer'
 import Cards from 'react-credit-cards-2'
 import 'react-credit-cards-2/dist/es/styles-compiled.css'
 
@@ -949,7 +950,7 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
       <div className={cn("space-y-6", className)}>
         {/* Section title */}
         <div className="mb-3">
-          <h2 className="text-base font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+          <h2 className="text-xl font-bold text-gray-600 dark:text-white uppercase tracking-wide">
             TRIP DETAILS
           </h2>
         </div>
@@ -1021,7 +1022,7 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
         {/* Billing Information Section */}
         <div className="mt-8">
           <div className="mb-4">
-            <h2 className="text-base font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+            <h2 className="text-xl font-bold text-gray-600 dark:text-white uppercase tracking-wide">
               BILLING INFORMATION
             </h2>
           </div>
@@ -1152,7 +1153,7 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
                   <CreditCard className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-wide">
                     PAYMENT INFORMATION
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -1294,267 +1295,235 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
         </div>
       </div>
 
-      {/* Flight Details Modal */}
-      {isFlightModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          {/* Overlay */}
-          <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsFlightModalOpen(false)}
-          />
-          
-          {/* Modal Content */}
-          <div className={cn(
-            "relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-t-2xl shadow-2xl",
-            "animate-in slide-in-from-bottom-full duration-300 ease-out",
-            "max-h-[85vh] overflow-y-auto"
-          )}>
-            {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 rounded-t-2xl">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Flight Details
-                </h2>
+      {/* Flight Details Drawer */}
+      <Drawer open={isFlightModalOpen} onOpenChange={setIsFlightModalOpen}>
+        <DrawerContent className="max-h-[90vh]">
+          <DrawerHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <DrawerTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                Flight Details
+              </DrawerTitle>
+              <DrawerClose asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsFlightModalOpen(false)}
                   className="h-8 w-8 p-0"
                 >
                   <X className="w-4 h-4" />
                 </Button>
-              </div>
-              
-              {/* Drag indicator */}
-              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+              </DrawerClose>
+            </div>
+          </DrawerHeader>
+
+          {/* Content */}
+          <div className="p-6 space-y-6 overflow-y-auto">
+            {/* Route Header */}
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                {mockFlightData.route}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                {mockFlightData.date}
+              </p>
             </div>
 
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Route Header */}
-              <div className="text-center">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {mockFlightData.route}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {mockFlightData.date}
-                </p>
+            {/* Flight Timeline */}
+            <div className="space-y-6">
+              {/* Departure */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 bg-[#EC5E39] rounded-full" />
+                  <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {mockFlightData.departure.time}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      Departure
+                    </Badge>
+                  </div>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {mockFlightData.departure.city}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {mockFlightData.departure.airport}
+                  </p>
+                </div>
               </div>
 
-              {/* Flight Timeline */}
-              <div className="space-y-6">
-                {/* Departure */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-3 h-3 bg-[#EC5E39] rounded-full" />
-                    <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {mockFlightData.departure.time}
-                      </span>
-                      <Badge variant="outline" className="text-xs">
-                        Departure
-                      </Badge>
-                    </div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {mockFlightData.departure.city}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {mockFlightData.departure.airport}
-                    </p>
-                  </div>
+              {/* Flight Info */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <Plane className="w-4 h-4 text-[#EC5E39]" />
+                  <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
                 </div>
-
-                {/* Flight Info */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <Plane className="w-4 h-4 text-[#EC5E39]" />
-                    <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white mb-1">
-                      {mockFlightData.layover.duration}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {mockFlightData.layover.flight}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      {mockFlightData.layover.operator}
-                    </p>
-                  </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 dark:text-white mb-1">
+                    {mockFlightData.layover.duration}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {mockFlightData.layover.flight}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    {mockFlightData.layover.operator}
+                  </p>
                 </div>
+              </div>
 
-                {/* Arrival */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-3 h-3 bg-[#0ABAB5] rounded-full" />
-                    <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {mockFlightData.arrival.time}
-                      </span>
-                      <Badge variant="outline" className="text-xs">
-                        Arrival
-                      </Badge>
-                    </div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {mockFlightData.arrival.city}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {mockFlightData.arrival.airport}
-                    </p>
-                  </div>
+              {/* Arrival */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 bg-[#0ABAB5] rounded-full" />
+                  <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
                 </div>
-
-                {/* Transit Info */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <Info className="w-4 h-4 text-blue-500" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {mockFlightData.arrival.time}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      Arrival
+                    </Badge>
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white mb-1">
-                      {mockFlightData.transit.duration}
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {mockFlightData.arrival.city}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {mockFlightData.arrival.airport}
+                  </p>
+                </div>
+              </div>
+
+              {/* Transit Info */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <Info className="w-4 h-4 text-blue-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 dark:text-white mb-1">
+                    {mockFlightData.transit.duration}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    {mockFlightData.transit.airport}
+                  </p>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                      {mockFlightData.transit.description}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                      {mockFlightData.transit.airport}
-                    </p>
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                      <p className="text-sm text-blue-800 dark:text-blue-200">
-                        {mockFlightData.transit.description}
-                      </p>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        </DrawerContent>
+      </Drawer>
 
-      {/* Passenger Details Modal */}
-      {isPassengerModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          {/* Overlay */}
-          <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsPassengerModalOpen(false)}
-          />
-          
-          {/* Modal Content */}
-          <div className={cn(
-            "relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-t-2xl shadow-2xl",
-            "animate-in slide-in-from-bottom-full duration-300 ease-out",
-            "max-h-[85vh] overflow-y-auto"
-          )}>
-            {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 rounded-t-2xl">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Passenger Details
-                </h2>
+      {/* Passenger Details Drawer */}
+      <Drawer open={isPassengerModalOpen} onOpenChange={setIsPassengerModalOpen}>
+        <DrawerContent className="max-h-[90vh]">
+          <DrawerHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <DrawerTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                Passenger Details
+              </DrawerTitle>
+              <DrawerClose asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsPassengerModalOpen(false)}
                   className="h-8 w-8 p-0"
                 >
                   <X className="w-4 h-4" />
                 </Button>
+              </DrawerClose>
+            </div>
+          </DrawerHeader>
+
+          {/* Content */}
+          <div className="p-6 space-y-6 overflow-y-auto">
+            {/* Passenger Header */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-lg mx-auto mb-4">
+                {getPassengerInitials(getSelectedPassengerData())}
               </div>
-              
-              {/* Drag indicator */}
-              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                {getPassengerName(getSelectedPassengerData())}
+              </h3>
+              <Badge variant="secondary" className="text-sm">
+                Passenger {mockPassengersData.findIndex(p => p.id === selectedPassenger) + 1}
+              </Badge>
             </div>
 
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Passenger Header */}
-              <div className="text-center">
-                <div className="w-20 h-20 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-lg mx-auto mb-4">
-                  {getPassengerInitials(getSelectedPassengerData())}
+            {/* Personal Information Card */}
+            <Card className="border border-gray-200 dark:border-gray-700">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <UserCheck className="w-5 h-5 text-[#EC5E39]" />
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Personal Information</h4>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {getPassengerName(getSelectedPassengerData())}
-                </h3>
-                <Badge variant="secondary" className="text-sm">
-                  Passenger {mockPassengersData.findIndex(p => p.id === selectedPassenger) + 1}
-                </Badge>
-              </div>
-
-              {/* Personal Information Card */}
-              <Card className="border border-gray-200 dark:border-gray-700">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <UserCheck className="w-5 h-5 text-[#EC5E39]" />
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Personal Information</h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <User className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Title & Name</label>
+                    </div>
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {getSelectedPassengerData().title} {getSelectedPassengerData().firstName} {getSelectedPassengerData().lastName}
+                    </p>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <User className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Title & Name</label>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {getSelectedPassengerData().title} {getSelectedPassengerData().firstName} {getSelectedPassengerData().lastName}
-                      </p>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Date of Birth</label>
                     </div>
-                    
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Date of Birth</label>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatBirthDate(getSelectedPassengerData())}</p>
-                    </div>
-                    
-                    <div className="space-y-1 md:col-span-2">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Globe className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Nationality</label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">{getNationalityFlag(getSelectedPassengerData().nationality)}</span>
-                        <p className="text-lg font-semibold text-gray-900 dark:text-white">{getCountryName(getSelectedPassengerData().nationality)}</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Passport Information Card */}
-              <Card className="border border-gray-200 dark:border-gray-700">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <FileText className="w-5 h-5 text-[#EC5E39]" />
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Passport Details</h4>
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatBirthDate(getSelectedPassengerData())}</p>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Passport Number</label>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white font-mono bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md">
-                        {getSelectedPassengerData().passportNumber}
-                      </p>
+                  <div className="space-y-1 md:col-span-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Globe className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Nationality</label>
                     </div>
-                    
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Expiry Date</label>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {formatPassportExpiry(getSelectedPassengerData())}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{getNationalityFlag(getSelectedPassengerData().nationality)}</span>
+                      <p className="text-lg font-semibold text-gray-900 dark:text-white">{getCountryName(getSelectedPassengerData().nationality)}</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Passport Information Card */}
+            <Card className="border border-gray-200 dark:border-gray-700">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <FileText className="w-5 h-5 text-[#EC5E39]" />
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Passport Details</h4>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Passport Number</label>
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white font-mono bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md">
+                      {getSelectedPassengerData().passportNumber}
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Expiry Date</label>
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {formatPassportExpiry(getSelectedPassengerData())}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
-      )}
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }

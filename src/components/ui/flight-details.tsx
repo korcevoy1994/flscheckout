@@ -4,8 +4,9 @@ import React, { useState } from 'react'
 import { Card, CardContent } from './card'
 import { Button } from './button'
 import { Badge } from './badge'
-import { Plane, Clock, MapPin, ChevronRight, X, Info } from 'lucide-react'
+import { Plane, Clock, MapPin, ChevronRight, Info, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from './drawer'
 
 interface FlightDetailsProps {
   className?: string
@@ -43,10 +44,10 @@ export function FlightDetails({ className }: FlightDetailsProps) {
     <>
       {/* Section title */}
       <div className="mb-3">
-        <h2 className="text-base font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-          ITINERARY
-        </h2>
-      </div>
+          <h2 className="text-xl font-bold text-gray-600 dark:text-white uppercase tracking-wide">
+              ITINERARY
+            </h2>
+        </div>
       
       {/* Compact card */}
       <Card 
@@ -87,146 +88,129 @@ export function FlightDetails({ className }: FlightDetailsProps) {
         </CardContent>
       </Card>
 
-      {/* Bottom Sheet Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          {/* Overlay */}
-          <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
-          />
-          
-          {/* Modal Content */}
-          <div className={cn(
-            "relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-t-2xl shadow-2xl",
-            "animate-in slide-in-from-bottom-full duration-300 ease-out",
-            "max-h-[85vh] overflow-y-auto"
-          )}>
-            {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 rounded-t-2xl">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Flight Details
-                </h2>
+      {/* Drawer */}
+      <Drawer open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <DrawerTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                {flightData.route}
+              </DrawerTitle>
+              <DrawerClose asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsModalOpen(false)}
                   className="h-8 w-8 p-0"
                 >
                   <X className="w-4 h-4" />
                 </Button>
-              </div>
-              
-              {/* Drag indicator */}
-              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+              </DrawerClose>
+            </div>
+          </DrawerHeader>
+
+          {/* Content */}
+          <div className="overflow-y-auto flex-1">
+            <div className="p-6 space-y-6">
+            {/* Flight date */}
+            <div className="text-center">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+                {flightData.date}
+              </p>
             </div>
 
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Route Header */}
-              <div className="text-center">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {flightData.route}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {flightData.date}
-                </p>
+            {/* Flight Timeline */}
+            <div className="space-y-6">
+              {/* Departure */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 bg-[#EC5E39] rounded-full" />
+                  <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {flightData.departure.time}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      Departure
+                    </Badge>
+                  </div>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {flightData.departure.city}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {flightData.departure.airport}
+                  </p>
+                </div>
               </div>
 
-              {/* Flight Timeline */}
-              <div className="space-y-6">
-                {/* Departure */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-3 h-3 bg-[#EC5E39] rounded-full" />
-                    <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {flightData.departure.time}
-                      </span>
-                      <Badge variant="outline" className="text-xs">
-                        Departure
-                      </Badge>
-                    </div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {flightData.departure.city}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {flightData.departure.airport}
-                    </p>
-                  </div>
+              {/* Flight Info */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <Plane className="w-4 h-4 text-[#EC5E39]" />
+                  <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
                 </div>
-
-                {/* Flight Info */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <Plane className="w-4 h-4 text-[#EC5E39]" />
-                    <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white mb-1">
-                      {flightData.layover.duration}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {flightData.layover.flight}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      {flightData.layover.operator}
-                    </p>
-                  </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 dark:text-white mb-1">
+                    {flightData.layover.duration}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {flightData.layover.flight}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    {flightData.layover.operator}
+                  </p>
                 </div>
+              </div>
 
-                {/* Arrival */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-3 h-3 bg-[#0ABAB5] rounded-full" />
-                    <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {flightData.arrival.time}
-                      </span>
-                      <Badge variant="outline" className="text-xs">
-                        Arrival
-                      </Badge>
-                    </div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {flightData.arrival.city}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {flightData.arrival.airport}
-                    </p>
-                  </div>
+              {/* Arrival */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 bg-[#0ABAB5] rounded-full" />
+                  <div className="w-0.5 h-16 bg-gray-300 dark:bg-gray-600 mt-2" />
                 </div>
-
-                {/* Transit Info */}
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center">
-                    <Info className="w-4 h-4 text-blue-500" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {flightData.arrival.time}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      Arrival
+                    </Badge>
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white mb-1">
-                      {flightData.transit.duration}
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {flightData.arrival.city}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {flightData.arrival.airport}
+                  </p>
+                </div>
+              </div>
+
+              {/* Transit Info */}
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <Info className="w-4 h-4 text-blue-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 dark:text-white mb-1">
+                    {flightData.transit.duration}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    {flightData.transit.airport}
+                  </p>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                      {flightData.transit.description}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                      {flightData.transit.airport}
-                    </p>
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                      <p className="text-sm text-blue-800 dark:text-blue-200">
-                        {flightData.transit.description}
-                      </p>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+          </div>
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }

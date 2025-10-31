@@ -45,6 +45,7 @@ export interface BookingState {
   contact: ContactData | null
   flight: FlightData | null
   currentStep: number
+  flightProtection: boolean
 }
 
 interface BookingContextType {
@@ -56,6 +57,7 @@ interface BookingContextType {
   addPassenger: () => void
   removePassenger: (passengerId: number) => void
   getPassenger: (passengerId: number) => PassengerData | undefined
+  setFlightProtection: (enabled: boolean) => void
 }
 
 const BookingContext = createContext<BookingContextType | undefined>(undefined)
@@ -122,7 +124,8 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
         duration: '1h 25m'
       }
     },
-    currentStep: 1
+    currentStep: 1,
+    flightProtection: false
   })
 
   const updatePassenger = (passengerId: number, data: Partial<PassengerData>) => {
@@ -193,6 +196,13 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
     return bookingState.passengers.find(p => p.id === passengerId)
   }
 
+  const setFlightProtection = (enabled: boolean) => {
+    setBookingState(prev => ({
+      ...prev,
+      flightProtection: enabled
+    }))
+  }
+
   const value: BookingContextType = {
     bookingState,
     updatePassenger,
@@ -201,7 +211,8 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
     setCurrentStep,
     addPassenger,
     removePassenger,
-    getPassenger
+    getPassenger,
+    setFlightProtection
   }
 
   return (

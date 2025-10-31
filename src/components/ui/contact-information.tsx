@@ -499,10 +499,10 @@ export function ContactInformation({ className }: ContactInformationProps) {
   return (
     <div className={className}>
       <div className="mb-3">
-        <h2 className="text-base font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+          <h2 className="text-xl font-bold text-gray-600 dark:text-white uppercase tracking-wide">
           CONTACT INFORMATION
         </h2>
-      </div>
+        </div>
       
       <Card className="shadow-sm border-gray-200 dark:border-gray-700">
         <CardContent className="p-6">
