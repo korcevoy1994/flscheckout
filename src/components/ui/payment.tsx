@@ -325,9 +325,9 @@ function SearchableCountrySelect({ value, onChange, placeholder = "Select countr
       </button>
       
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-full bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 max-h-60 overflow-hidden">
+        <div className="absolute top-full left-0 mt-1 w-full bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 max-h-60 flex flex-col">
           {/* Search input */}
-          <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="p-2 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
             <div className="relative">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
@@ -342,7 +342,7 @@ function SearchableCountrySelect({ value, onChange, placeholder = "Select countr
           </div>
           
           {/* Countries list */}
-          <div className="max-h-48 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto min-h-0">
             {filteredCountries.length > 0 ? (
               filteredCountries.map((country) => (
                 <button
@@ -1138,15 +1138,11 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
                   </div>
                 </div>
               </div>
-              
-              <Button className="w-full mt-6 bg-[#EC5E39] hover:bg-[#d54e2a] text-white font-semibold py-3 rounded-lg">
-                Continue to Payment
-              </Button>
             </CardContent>
           </Card>
 
           {/* Credit Card Information Section */}
-          <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm mt-6">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-[#0fbab5] rounded-full flex items-center justify-center">
@@ -1441,55 +1437,55 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
           </DrawerHeader>
 
           {/* Content */}
-          <div className="p-6 space-y-6 overflow-y-auto">
+          <div className="p-4 space-y-4 overflow-y-auto">
             {/* Passenger Header */}
             <div className="text-center">
-              <div className="w-20 h-20 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-lg mx-auto mb-4">
+              <div className="w-16 h-16 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg mx-auto mb-3">
                 {getPassengerInitials(getSelectedPassengerData())}
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                 {getPassengerName(getSelectedPassengerData())}
               </h3>
-              <Badge variant="secondary" className="text-sm">
+              <Badge variant="secondary" className="text-xs">
                 Passenger {mockPassengersData.findIndex(p => p.id === selectedPassenger) + 1}
               </Badge>
             </div>
 
             {/* Personal Information Card */}
             <Card className="border border-gray-200 dark:border-gray-700">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <UserCheck className="w-5 h-5 text-[#EC5E39]" />
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Personal Information</h4>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <UserCheck className="w-4 h-4 text-[#EC5E39]" />
+                  <h4 className="text-base font-semibold text-gray-900 dark:text-white">Personal Information</h4>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <User className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Title & Name</label>
+                      <User className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                      <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Title & Name</label>
                     </div>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
                       {getSelectedPassengerData().title} {getSelectedPassengerData().firstName} {getSelectedPassengerData().lastName}
                     </p>
                   </div>
                   
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Date of Birth</label>
+                      <Calendar className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                      <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Date of Birth</label>
                     </div>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatBirthDate(getSelectedPassengerData())}</p>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{formatBirthDate(getSelectedPassengerData())}</p>
                   </div>
                   
                   <div className="space-y-1 md:col-span-2">
                     <div className="flex items-center gap-2 mb-1">
-                      <Globe className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Nationality</label>
+                      <Globe className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                      <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Nationality</label>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{getNationalityFlag(getSelectedPassengerData().nationality)}</span>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white">{getCountryName(getSelectedPassengerData().nationality)}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{getNationalityFlag(getSelectedPassengerData().nationality)}</span>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{getCountryName(getSelectedPassengerData().nationality)}</p>
                     </div>
                   </div>
                 </div>
@@ -1498,23 +1494,23 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
 
             {/* Passport Information Card */}
             <Card className="border border-gray-200 dark:border-gray-700">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <FileText className="w-5 h-5 text-[#EC5E39]" />
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Passport Details</h4>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileText className="w-4 h-4 text-[#EC5E39]" />
+                  <h4 className="text-base font-semibold text-gray-900 dark:text-white">Passport Details</h4>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Passport Number</label>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white font-mono bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md">
+                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Passport Number</label>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white font-mono bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded-md">
                       {getSelectedPassengerData().passportNumber}
                     </p>
                   </div>
                   
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Expiry Date</label>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Expiry Date</label>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
                       {formatPassportExpiry(getSelectedPassengerData())}
                     </p>
                   </div>

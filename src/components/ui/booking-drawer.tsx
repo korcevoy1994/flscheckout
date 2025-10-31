@@ -135,7 +135,15 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose }) => {
               <Phone className="w-3 h-3 mt-0.5 flex-shrink-0" style={{ color: '#0ABAB5' }} />
               <div>
                 <div className="text-xs font-medium text-gray-900 dark:text-white">24/7 Support</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Call us anytime at +1 (555) 123-4567</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">
+                  Call us anytime at{' '}
+                  <a 
+                    href="tel:+15551234567" 
+                    className="text-[#0ABAB5] hover:text-[#0ABAB5]/80 underline transition-colors"
+                  >
+                    +1 (555) 123-4567
+                  </a>
+                </div>
               </div>
             </div>
           </div>

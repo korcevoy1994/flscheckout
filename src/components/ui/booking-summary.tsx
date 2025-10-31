@@ -110,7 +110,14 @@ export default function BookingSummary() {
               <Phone className="w-3 h-3 mt-0.5 flex-shrink-0" style={{ color: '#0ebab5' }} />
               <div>
                 <div className="text-xs font-medium text-gray-900 dark:text-white">24/7 Support</div>
-                <div className="text-xs font-medium text-[#0ABAB5]">+1 888 830 7444</div>
+                <div className="text-xs font-medium">
+                  <a 
+                    href="tel:+18888307444" 
+                    className="text-[#0ABAB5] hover:text-[#0ABAB5]/80 transition-colors"
+                  >
+                    +1 888 830 7444
+                  </a>
+                </div>
               </div>
             </div>
           </div>

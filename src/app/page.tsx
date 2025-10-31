@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CheckoutSteps from "@/components/ui/checkout-steps"
 import BookingSummary from "@/components/ui/booking-summary"
 import BookingDrawer from "@/components/ui/booking-drawer"
@@ -19,6 +19,49 @@ export default function Home() {
   const { currentStep } = bookingState
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [selectedProtection, setSelectedProtection] = useState<string>('')
+  const [isFormValid, setIsFormValid] = useState(false)
+
+  // Validate form based on current step
+  useEffect(() => {
+    const validateForm = (): boolean => {
+      switch (currentStep) {
+        case 1:
+          // Check if contact info and passenger details are filled
+          const hasContactInfo = !!(bookingState.contact?.email && bookingState.contact?.phone)
+          const hasPassengerData = bookingState.passengers.length > 0 && 
+            bookingState.passengers.every(p => p.firstName && p.lastName && p.birthDay && p.birthMonth && p.birthYear)
+          return hasContactInfo && hasPassengerData
+        case 2:
+          // Check if protection option is selected
+          return !!selectedProtection
+        case 3:
+          // Check if billing and payment info is filled
+          const hasBillingInfo = bookingState.billing &&
+            bookingState.billing.streetAddress &&
+            bookingState.billing.country &&
+            bookingState.billing.stateRegion &&
+            bookingState.billing.city &&
+            bookingState.billing.zipCode
+          
+          const hasCardInfo = bookingState.card &&
+            bookingState.card.number &&
+            bookingState.card.expiry &&
+            bookingState.card.cvc &&
+            bookingState.card.name
+          
+          return !!(hasBillingInfo && hasCardInfo)
+        default:
+          return false
+      }
+    }
+    
+    setIsFormValid(validateForm())
+  }, [currentStep, bookingState, selectedProtection])
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentStep])
 
   const handleContinueToProtection = () => {
     setCurrentStep(2)
@@ -52,6 +95,21 @@ export default function Home() {
 
   const handleEditPassenger = () => {
     setCurrentStep(1)
+  }
+
+  const handleMobileContinue = () => {
+    switch (currentStep) {
+      case 1:
+        handleContinueToProtection()
+        break
+      case 2:
+        handleContinueToPayment()
+        break
+      case 3:
+        // Handle payment submission
+        console.log('Processing payment...')
+        break
+    }
   }
 
   return (
@@ -93,14 +151,16 @@ export default function Home() {
                       If you need to change the passenger details later, you will have to choose your flight(s) again.
                     </p>
                     
-                    {/* Continue button */}
-                    <Button 
-                      onClick={handleContinueToProtection}
-                      className="w-full bg-[#EC5E39] hover:bg-[#d54e2a] text-white py-6 px-8 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group min-h-[60px]"
-                    >
-                      Continue to Flight Protection
-                      <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </Button>
+                    {/* Continue button - Desktop only */}
+                    <div className="hidden lg:block">
+                      <Button 
+                        onClick={handleContinueToProtection}
+                        className="w-full bg-[#EC5E39] hover:bg-[#d54e2a] text-white py-6 px-8 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group min-h-[60px]"
+                      >
+                        Continue to Flight Protection
+                        <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                      </Button>
+                    </div>
                     
                     {/* Privacy notice */}
                     <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 text-center">
@@ -116,8 +176,8 @@ export default function Home() {
               <div className="space-y-6">
                 <FlightProtection onSelectionChange={handleProtectionSelection} />
                 
-                {/* Navigation buttons */}
-                <div className="flex justify-between items-center pt-6">
+                {/* Navigation buttons - Desktop only */}
+                <div className="hidden lg:flex justify-between items-center pt-6">
                   <Button
                     onClick={handleBackToDetails}
                     variant="outline"
@@ -150,8 +210,8 @@ export default function Home() {
                   onEditPassenger={handleEditPassenger}
                 />
                 
-                {/* Navigation buttons */}
-                <div className="flex justify-between items-center pt-6">
+                {/* Navigation buttons - Desktop only */}
+                <div className="hidden lg:flex justify-between items-center pt-6">
                   <Button
                     onClick={handleBackToProtection}
                     variant="outline"
@@ -175,7 +235,13 @@ export default function Home() {
         </div>
         
         {/* Mobile Bottom Bar */}
-        <MobileBookingBar onOpenDrawer={() => setIsDrawerOpen(true)} />
+        <MobileBookingBar 
+          onOpenDrawer={() => setIsDrawerOpen(true)}
+          onContinue={handleMobileContinue}
+          showContinue={true}
+          isFormValid={isFormValid}
+          currentStep={currentStep}
+        />
         
         {/* Mobile Drawer */}
         <BookingDrawer 
