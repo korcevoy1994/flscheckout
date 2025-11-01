@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { ArrowUp, ArrowRight, Receipt } from 'lucide-react'
 import { useBooking } from '@/contexts/BookingContext'
+import { useMobileViewport } from '@/hooks/useMobileViewport'
 import { Tooltip } from './tooltip'
 
 interface MobileBookingBarProps {
@@ -22,6 +23,9 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({
 }) => {
   const { bookingState } = useBooking()
   const [showTooltip, setShowTooltip] = useState(false)
+
+  // Use mobile viewport hook for dynamic positioning
+  useMobileViewport()
 
   // Use the same calculations as desktop BookingSummary
   const baseFare = 1245
