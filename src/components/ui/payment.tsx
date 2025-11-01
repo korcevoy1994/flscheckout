@@ -454,26 +454,58 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
   const [selectedPassenger, setSelectedPassenger] = useState<number | null>(null)
   
   // Get data from BookingContext
-  const { bookingState } = useBooking()
+  const { bookingState, updateBilling, updateCard } = useBooking()
   const passengers = bookingState.passengers
   
-  // Billing form state
+  // Billing form state - initialize from context
   const [billingData, setBillingData] = useState({
-    streetAddress: '',
-    country: '',
-    stateRegion: '',
-    city: '',
-    zipCode: ''
+    streetAddress: bookingState.billing?.streetAddress || '',
+    country: bookingState.billing?.country || '',
+    stateRegion: bookingState.billing?.stateRegion || '',
+    city: bookingState.billing?.city || '',
+    zipCode: bookingState.billing?.zipCode || ''
   })
 
-  // Credit card state
+  // Credit card state - initialize from context
   const [cardData, setCardData] = useState({
-    number: '',
-    expiry: '',
-    cvc: '',
-    name: '',
+    number: bookingState.card?.number || '',
+    expiry: bookingState.card?.expiry || '',
+    cvc: bookingState.card?.cvc || '',
+    name: bookingState.card?.name || '',
     focus: ''
   })
+
+  // Save billing data to context when it changes (but not on initial load)
+  useEffect(() => {
+    // Only update if the data is different from what's in context
+    const contextBilling = bookingState.billing
+    const hasChanges = !contextBilling || 
+      contextBilling.streetAddress !== billingData.streetAddress ||
+      contextBilling.country !== billingData.country ||
+      contextBilling.stateRegion !== billingData.stateRegion ||
+      contextBilling.city !== billingData.city ||
+      contextBilling.zipCode !== billingData.zipCode
+
+    if (hasChanges && (billingData.streetAddress || billingData.country || billingData.stateRegion || billingData.city || billingData.zipCode)) {
+      updateBilling(billingData)
+    }
+  }, [billingData, updateBilling, bookingState.billing])
+
+  // Save card data to context when it changes (but not on initial load)
+  useEffect(() => {
+    // Only update if the data is different from what's in context
+    const contextCard = bookingState.card
+    const { focus, ...cardDataWithoutFocus } = cardData
+    const hasChanges = !contextCard ||
+      contextCard.number !== cardDataWithoutFocus.number ||
+      contextCard.expiry !== cardDataWithoutFocus.expiry ||
+      contextCard.cvc !== cardDataWithoutFocus.cvc ||
+      contextCard.name !== cardDataWithoutFocus.name
+
+    if (hasChanges && (cardDataWithoutFocus.number || cardDataWithoutFocus.expiry || cardDataWithoutFocus.cvc || cardDataWithoutFocus.name)) {
+      updateCard(cardDataWithoutFocus)
+    }
+  }, [cardData.number, cardData.expiry, cardData.cvc, cardData.name, updateCard, bookingState.card])
 
   // Handle card input changes
   const handleCardInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react'
 
 // Storage key for localStorage
 const BOOKING_STORAGE_KEY = 'luxeskies_booking_data'
@@ -194,7 +194,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
     saveBookingState(bookingState)
   }, [bookingState])
 
-  const updatePassenger = (passengerId: number, data: Partial<PassengerData>) => {
+  const updatePassenger = useCallback((passengerId: number, data: Partial<PassengerData>) => {
     setBookingState(prev => ({
       ...prev,
       passengers: prev.passengers.map(passenger =>
@@ -203,44 +203,44 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
           : passenger
       )
     }))
-  }
+  }, [])
 
-  const updateContact = (data: ContactData) => {
+  const updateContact = useCallback((data: ContactData) => {
     setBookingState(prev => ({
       ...prev,
       contact: data
     }))
-  }
+  }, [])
 
-  const updateFlight = (data: FlightData) => {
+  const updateFlight = useCallback((data: FlightData) => {
     setBookingState(prev => ({
       ...prev,
       flight: data
     }))
-  }
+  }, [])
 
-  const updateBilling = (data: BillingData) => {
+  const updateBilling = useCallback((data: BillingData) => {
     setBookingState(prev => ({
       ...prev,
       billing: data
     }))
-  }
+  }, [])
 
-  const updateCard = (data: CardData) => {
+  const updateCard = useCallback((data: CardData) => {
     setBookingState(prev => ({
       ...prev,
       card: data
     }))
-  }
+  }, [])
 
-  const setCurrentStep = (step: number) => {
+  const setCurrentStep = useCallback((step: number) => {
     setBookingState(prev => ({
       ...prev,
       currentStep: step
     }))
-  }
+  }, [])
 
-  const addPassenger = () => {
+  const addPassenger = useCallback(() => {
     const newId = Math.max(...bookingState.passengers.map(p => p.id)) + 1
     const newPassenger: PassengerData = {
       id: newId,
@@ -263,25 +263,25 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
       ...prev,
       passengers: [...prev.passengers, newPassenger]
     }))
-  }
+  }, [bookingState.passengers])
 
-  const removePassenger = (passengerId: number) => {
+  const removePassenger = useCallback((passengerId: number) => {
     setBookingState(prev => ({
       ...prev,
       passengers: prev.passengers.filter(p => p.id !== passengerId)
     }))
-  }
+  }, [])
 
-  const getPassenger = (passengerId: number) => {
+  const getPassenger = useCallback((passengerId: number) => {
     return bookingState.passengers.find(p => p.id === passengerId)
-  }
+  }, [bookingState.passengers])
 
-  const setFlightProtection = (enabled: boolean) => {
+  const setFlightProtection = useCallback((enabled: boolean) => {
     setBookingState(prev => ({
       ...prev,
       flightProtection: enabled
     }))
-  }
+  }, [])
 
   const value: BookingContextType = {
     bookingState,

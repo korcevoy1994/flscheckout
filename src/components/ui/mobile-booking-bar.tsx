@@ -45,7 +45,7 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-bar">
       {/* Ultra-modern backdrop with subtle gradient - dark theme support */}
       <div className="absolute inset-0 bg-gradient-to-t from-white via-white/98 to-white/95 dark:from-gray-900 dark:via-gray-900/98 dark:to-gray-900/95 backdrop-blur-2xl" />
       
@@ -110,8 +110,8 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({
         </div>
       </div>
       
-      {/* Safe area for devices with home indicator - dark theme support */}
-      <div className="h-safe-area-inset-bottom bg-white dark:bg-gray-900" />
+      {/* Safe area for devices with home indicator - enhanced for mobile */}
+      <div className="bg-white dark:bg-gray-900" style={{ height: 'env(safe-area-inset-bottom, 0px)' }} />
     </div>
   )
 }

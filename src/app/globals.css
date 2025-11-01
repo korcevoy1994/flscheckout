@@ -137,3 +137,37 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile viewport fixes for better positioning */
+@supports (height: 100dvh) {
+  .mobile-bottom-bar {
+    bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Fallback for older browsers */
+@supports not (height: 100dvh) {
+  .mobile-bottom-bar {
+    bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Ensure proper viewport handling on mobile */
+html {
+  /* Prevent zoom on iOS */
+  -webkit-text-size-adjust: 100%;
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+/* Mobile-specific styles */
+@media screen and (max-width: 1024px) {
+  body {
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Ensure full height on mobile */
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}

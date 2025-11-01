@@ -15,8 +15,20 @@ import { ChevronRight, ChevronLeft } from "lucide-react"
 import { useBooking } from "@/contexts/BookingContext"
 
 export default function Home() {
-  const { bookingState, setCurrentStep } = useBooking()
-  const { currentStep } = bookingState
+  // Get booking context
+  const { bookingState, setCurrentStep: setContextCurrentStep } = useBooking()
+  
+  // Use currentStep from context, with fallback to local state for initial load
+  const [localCurrentStep, setLocalCurrentStep] = useState(1)
+  const currentStep = bookingState.currentStep || localCurrentStep
+  
+  // Sync local step with context step on mount
+  useEffect(() => {
+    if (bookingState.currentStep && bookingState.currentStep !== localCurrentStep) {
+      setLocalCurrentStep(bookingState.currentStep)
+    }
+  }, [bookingState.currentStep, localCurrentStep])
+  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [selectedProtection, setSelectedProtection] = useState<string>('')
   const [isFormValid, setIsFormValid] = useState(false)
@@ -64,20 +76,24 @@ export default function Home() {
   }, [currentStep])
 
   const handleContinueToProtection = () => {
-    setCurrentStep(2)
+    setContextCurrentStep(2)
+    setLocalCurrentStep(2)
   }
 
   const handleBackToDetails = () => {
-    setCurrentStep(1)
+    setContextCurrentStep(1)
+    setLocalCurrentStep(1)
   }
 
   const handleBackToProtection = () => {
-    setCurrentStep(2)
+    setContextCurrentStep(2)
+    setLocalCurrentStep(2)
   }
 
   const handleContinueToPayment = () => {
     if (selectedProtection) {
-      setCurrentStep(3)
+      setContextCurrentStep(3)
+      setLocalCurrentStep(3)
     }
   }
 
@@ -86,18 +102,23 @@ export default function Home() {
   }
 
   const handleEditFlight = () => {
-    setCurrentStep(1)
+    setContextCurrentStep(1)
+    setLocalCurrentStep(1)
   }
 
   const handleEditContact = () => {
-    setCurrentStep(1)
+    setContextCurrentStep(1)
+    setLocalCurrentStep(1)
   }
 
   const handleEditPassenger = () => {
-    setCurrentStep(1)
+    setContextCurrentStep(1)
+    setLocalCurrentStep(1)
   }
 
   const handleMobileContinue = () => {
+    if (!isFormValid) return
+    
     switch (currentStep) {
       case 1:
         handleContinueToProtection()
@@ -119,6 +140,39 @@ export default function Home() {
           {/* Left column - CheckoutSteps and current step content */}
           <div className="lg:col-span-3 space-y-6">
             <CheckoutSteps currentStep={currentStep} />
+            
+            {/* Mobile Navigation Buttons - Top of page */}
+            <div className="lg:hidden">
+              {/* Step 2: Show Back to Details */}
+              {currentStep === 2 && (
+                <div className="mb-4">
+                  <Button
+                    onClick={handleBackToDetails}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center px-4 py-2 text-sm"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-2" />
+                    Back to Details
+                  </Button>
+                </div>
+              )}
+              
+              {/* Step 3: Show Back to Protection */}
+              {currentStep === 3 && (
+                <div className="mb-4">
+                  <Button
+                    onClick={handleBackToProtection}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center px-4 py-2 text-sm"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-2" />
+                    Back to Protection
+                  </Button>
+                </div>
+              )}
+            </div>
             
             {/* Step 1: Flight Details */}
             {currentStep === 1 && (

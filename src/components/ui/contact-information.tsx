@@ -610,7 +610,7 @@ export function ContactInformation({ className }: ContactInformationProps) {
                 Mobile Phone
               </Label>
               <div className="relative">
-                <div className={getInputClassName(phoneValidation, "w-full h-12 transition-all duration-200 flex items-center border rounded-md bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700")}>
+                <div className={getInputClassName(phoneValidation, "w-full h-12 transition-all duration-200 flex items-center border rounded-md bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 relative")}>
                   {/* Country selector inside input */}
                 <div className="relative" ref={dropdownRef}>
                     <button
@@ -692,11 +692,11 @@ export function ContactInformation({ className }: ContactInformationProps) {
                     className="flex-1 px-3 py-2 bg-transparent border-none outline-none text-sm placeholder-gray-400 pr-10"
                     placeholder="Enter phone number"
                   />
-                </div>
-                
-                {/* Validation icon positioned absolutely outside the input container */}
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                  <ValidationIcon validation={phoneValidation} />
+                  
+                  {/* Validation icon positioned absolutely inside the input container */}
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <ValidationIcon validation={phoneValidation} />
+                  </div>
                 </div>
                 
                 {/* Progress indicator */}
