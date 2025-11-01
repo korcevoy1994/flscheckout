@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Card, CardContent } from './card'
 import { Input } from './input'
 import { Label } from './label'
@@ -8,6 +8,7 @@ import { Checkbox } from './checkbox'
 import { Mail, Phone, Check, AlertCircle, ChevronDown, Search } from 'lucide-react'
 import { isValidPhoneNumber, getCountryCallingCode, parsePhoneNumber, getExampleNumber } from 'libphonenumber-js'
 import validator from 'validator'
+import { useBooking } from '../../contexts/BookingContext'
 
 interface ContactInformationProps {
   className?: string
@@ -271,9 +272,11 @@ const allCountries: CountryOption[] = [
 ]
 
 export function ContactInformation({ className }: ContactInformationProps) {
+  const { bookingState, updateContact } = useBooking()
+  
   const [formData, setFormData] = useState({
-    email: '',
-    mobilePhone: '',
+    email: bookingState.contact?.email || '',
+    mobilePhone: bookingState.contact?.phone || '',
     receiveOffers: false
   })
 
@@ -397,6 +400,21 @@ export function ContactInformation({ className }: ContactInformationProps) {
     const debounceTimer = setTimeout(validatePhone, 300)
     return () => clearTimeout(debounceTimer)
   }, [phoneDigitsOnly, selectedCountry])
+
+  // Synchronize with BookingContext when form data changes
+  const syncContactData = useCallback(() => {
+    if (emailValidation.isValid && phoneValidation.isValid) {
+      updateContact({
+        email: formData.email,
+        phone: selectedCountry.callingCode + phoneDigitsOnly,
+        countryCode: selectedCountry.code
+      })
+    }
+  }, [formData.email, phoneDigitsOnly, selectedCountry.callingCode, selectedCountry.code, emailValidation.isValid, phoneValidation.isValid, updateContact])
+
+  useEffect(() => {
+    syncContactData()
+  }, [syncContactData])
 
   // Обработчик кликов вне dropdown
   useEffect(() => {
@@ -632,14 +650,14 @@ export function ContactInformation({ className }: ContactInformationProps) {
                     type="tel"
                     value={formatPhoneDisplay(phoneDigitsOnly)}
                     onChange={(e) => handlePhoneChange(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-transparent border-none outline-none text-sm placeholder-gray-400"
+                    className="flex-1 px-3 py-2 bg-transparent border-none outline-none text-sm placeholder-gray-400 pr-10"
                     placeholder="Enter phone number"
                   />
-                  
-                  {/* Validation icon */}
-                  <div className="px-3">
-                    <ValidationIcon validation={phoneValidation} />
-                  </div>
+                </div>
+                
+                {/* Validation icon positioned absolutely outside the input container */}
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <ValidationIcon validation={phoneValidation} />
                 </div>
                 
                 {/* Progress indicator */}

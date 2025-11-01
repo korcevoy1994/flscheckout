@@ -184,13 +184,10 @@ const saveBookingState = (state: BookingState) => {
 }
 
 export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) => {
-  const [bookingState, setBookingState] = useState<BookingState>(getDefaultBookingState)
-
-  // Load state from localStorage on mount
-  useEffect(() => {
-    const loadedState = loadBookingState()
-    setBookingState(loadedState)
-  }, [])
+  const [bookingState, setBookingState] = useState<BookingState>(() => {
+    // Initialize state with localStorage data on first render
+    return loadBookingState()
+  })
 
   // Save state to localStorage whenever it changes
   useEffect(() => {

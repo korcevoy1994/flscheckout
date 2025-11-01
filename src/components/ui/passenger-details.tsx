@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -495,6 +495,28 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
     }
   }, [isModalOpen])
 
+  // Watch all form fields for real-time synchronization
+  const watchedFields = watch()
+
+  // Sync form data with BookingContext in real-time using useCallback to prevent infinite loops
+  const syncFormData = useCallback(() => {
+    // Only sync if form has valid data (at least some fields are filled)
+    const hasData = Object.values(watchedFields).some(value => value && value.trim() !== '')
+    
+    if (hasData) {
+      updatePassenger(passengerNumber, {
+        id: passengerNumber,
+        ...watchedFields
+      })
+    }
+  }, [watchedFields, passengerNumber, updatePassenger])
+
+  // Debounce the sync to prevent excessive updates
+  useEffect(() => {
+    const timeoutId = setTimeout(syncFormData, 300)
+    return () => clearTimeout(timeoutId)
+  }, [syncFormData])
+
   // Smart input formatting functions
   const formatPassportNumber = (value: string) => {
     return value.toUpperCase().replace(/[^A-Z0-9]/g, '')
@@ -591,9 +613,8 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
 
   // Get passenger initials
   const getPassengerInitials = () => {
-    const values = watch()
-    if (values.firstName && values.lastName) {
-      return `${values.firstName[0]}${values.lastName[0]}`
+    if (existingPassenger?.firstName && existingPassenger?.lastName) {
+      return `${existingPassenger.firstName[0]}${existingPassenger.lastName[0]}`
     }
     return 'AP'
   }
@@ -629,7 +650,7 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+              <div className="w-12 h-12 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg" suppressHydrationWarning>
                 {getPassengerInitials()}
               </div>
               <div>
