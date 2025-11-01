@@ -274,16 +274,35 @@ const allCountries: CountryOption[] = [
 export function ContactInformation({ className }: ContactInformationProps) {
   const { bookingState, updateContact } = useBooking()
   
+  // Initialize phone number and country from bookingState
+  const initializePhoneData = () => {
+    const existingPhone = bookingState.contact?.phone || ''
+    const existingCountryCode = bookingState.contact?.countryCode || 'US'
+    
+    // Find the country by country code
+    const country = allCountries.find(c => c.code === existingCountryCode) || allCountries[0]
+    
+    // Extract digits from existing phone number
+    let digitsOnly = ''
+    if (existingPhone && existingPhone.startsWith(country.callingCode)) {
+      digitsOnly = existingPhone.replace(country.callingCode, '').replace(/\D/g, '')
+    }
+    
+    return { country, digitsOnly }
+  }
+
+  const { country: initialCountry, digitsOnly: initialDigits } = initializePhoneData()
+  
   const [formData, setFormData] = useState({
     email: bookingState.contact?.email || '',
     mobilePhone: bookingState.contact?.phone || '',
     receiveOffers: false
   })
 
-  const [selectedCountry, setSelectedCountry] = useState<CountryOption>(allCountries[0])
+  const [selectedCountry, setSelectedCountry] = useState<CountryOption>(initialCountry)
   const [showCountryDropdown, setShowCountryDropdown] = useState(false)
   const [countrySearchTerm, setCountrySearchTerm] = useState('')
-  const [phoneDigitsOnly, setPhoneDigitsOnly] = useState('')
+  const [phoneDigitsOnly, setPhoneDigitsOnly] = useState(initialDigits)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const [emailValidation, setEmailValidation] = useState<ValidationState>({
@@ -354,7 +373,29 @@ export function ContactInformation({ className }: ContactInformationProps) {
 
     const debounceTimer = setTimeout(validateEmail, 300)
     return () => clearTimeout(debounceTimer)
-  }, [formData.email])
+  }, [phoneDigitsOnly, selectedCountry])
+
+  // Synchronize with BookingContext when form data changes
+  const syncContactData = useCallback(() => {
+    try {
+      if (emailValidation.isValid && phoneValidation.isValid) {
+        updateContact({
+          email: formData.email,
+          phone: selectedCountry.callingCode + phoneDigitsOnly,
+          countryCode: selectedCountry.code
+        })
+      }
+    } catch (error) {
+      console.error('Error syncing contact data:', error)
+    }
+  }, [formData.email, phoneDigitsOnly, selectedCountry.callingCode, selectedCountry.code, emailValidation.isValid, phoneValidation.isValid, updateContact])
+
+  // Sync contact data when both validations are successful
+  useEffect(() => {
+    if (emailValidation.isValid && phoneValidation.isValid) {
+      syncContactData()
+    }
+  }, [emailValidation.isValid, phoneValidation.isValid])
 
   // Real-time phone validation
   useEffect(() => {
@@ -366,6 +407,18 @@ export function ContactInformation({ className }: ContactInformationProps) {
     const validatePhone = () => {
       try {
         const fullNumber = selectedCountry.callingCode + phoneDigitsOnly
+        
+        // Additional validation to prevent libphonenumber-js errors
+        if (!phoneDigitsOnly || phoneDigitsOnly.length < 3) {
+          const expectedLength = selectedCountry.exampleLength
+          setPhoneValidation({ 
+            isValid: false, 
+            message: `Enter ${expectedLength - phoneDigitsOnly.length} more digits`, 
+            type: 'error' 
+          })
+          return
+        }
+        
         if (isValidPhoneNumber(fullNumber)) {
           setPhoneValidation({ 
             isValid: true, 
@@ -389,6 +442,7 @@ export function ContactInformation({ className }: ContactInformationProps) {
           }
         }
       } catch (error) {
+        console.error('Phone validation error:', error)
         setPhoneValidation({ 
           isValid: false, 
           message: 'Invalid phone number format', 
@@ -400,21 +454,6 @@ export function ContactInformation({ className }: ContactInformationProps) {
     const debounceTimer = setTimeout(validatePhone, 300)
     return () => clearTimeout(debounceTimer)
   }, [phoneDigitsOnly, selectedCountry])
-
-  // Synchronize with BookingContext when form data changes
-  const syncContactData = useCallback(() => {
-    if (emailValidation.isValid && phoneValidation.isValid) {
-      updateContact({
-        email: formData.email,
-        phone: selectedCountry.callingCode + phoneDigitsOnly,
-        countryCode: selectedCountry.code
-      })
-    }
-  }, [formData.email, phoneDigitsOnly, selectedCountry.callingCode, selectedCountry.code, emailValidation.isValid, phoneValidation.isValid, updateContact])
-
-  useEffect(() => {
-    syncContactData()
-  }, [syncContactData])
 
   // Обработчик кликов вне dropdown
   useEffect(() => {
@@ -579,7 +618,7 @@ export function ContactInformation({ className }: ContactInformationProps) {
                       onClick={() => setShowCountryDropdown(!showCountryDropdown)}
                       className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-l-xl transition-colors cursor-pointer"
                     >
-                      <span className="text-lg">{selectedCountry.flag}</span>
+                      <span className="text-lg" suppressHydrationWarning>{selectedCountry.flag}</span>
                       <span className="text-sm text-gray-600 dark:text-gray-400">{selectedCountry.callingCode}</span>
                       <ChevronDown className="w-3 h-3 text-gray-400" />
                     </button>
