@@ -1470,15 +1470,29 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
               <DrawerTitle className="text-xl font-semibold text-gray-900 dark:text-white">
                 Passenger Details
               </DrawerTitle>
-              <DrawerClose asChild>
+              <div className="flex items-center gap-2">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="h-8 w-8 p-0"
+                  onClick={() => {
+                    setIsPassengerModalOpen(false)
+                    // Вызываем функцию редактирования пассажира
+                    onEditPassenger?.()
+                  }}
+                  className="h-8 px-3 text-xs"
                 >
-                  <X className="w-4 h-4" />
+                  Edit
                 </Button>
-              </DrawerClose>
+                <DrawerClose asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </DrawerClose>
+              </div>
             </div>
           </DrawerHeader>
 
