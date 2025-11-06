@@ -510,6 +510,19 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
       })
     }
   }, [watchedFields, passengerNumber, updatePassenger])
+  
+  // Only sync when form is submitted (valid) to prevent partial data from triggering validation
+  const handleFormSubmit = (data: PassengerFormData) => {
+    updatePassenger(passengerNumber, {
+      id: passengerNumber,
+      ...data
+    })
+    
+    // Add a small delay to show success state
+    setTimeout(() => {
+      setIsModalOpen(false)
+    }, 500)
+  }
 
   // Debounce the sync to prevent excessive updates
   useEffect(() => {

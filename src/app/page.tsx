@@ -38,27 +38,35 @@ export default function Home() {
       switch (currentStep) {
         case 1:
           // Check if contact info and passenger details are filled
-          const hasContactInfo = !!(bookingState.contact?.email && bookingState.contact?.phone)
-          const hasPassengerData = bookingState.passengers.length > 0 && 
-            bookingState.passengers.every(p => p.firstName && p.lastName && p.birthDay && p.birthMonth && p.birthYear)
+          const hasContactInfo = !!(bookingState.contact?.email && bookingState.contact?.phone &&
+            bookingState.contact.email.trim() !== '' && bookingState.contact.phone.trim() !== '')
+          const hasPassengerData = bookingState.passengers.length > 0 &&
+            bookingState.passengers.every(p =>
+              p.firstName && p.lastName && p.birthDay && p.birthMonth && p.birthYear &&
+              p.firstName.trim() !== '' && p.lastName.trim() !== '' &&
+              p.birthDay.trim() !== '' && p.birthMonth.trim() !== '' && p.birthYear.trim() !== '' &&
+              p.title && p.title.trim() !== '' && p.gender && p.gender.trim() !== '' &&
+              p.nationality && p.nationality.trim() !== '' && p.passportNumber && p.passportNumber.trim() !== '' &&
+              p.expiryDay && p.expiryDay.trim() !== '' && p.expiryMonth && p.expiryMonth.trim() !== '' && p.expiryYear && p.expiryYear.trim() !== ''
+            )
           return hasContactInfo && hasPassengerData
         case 2:
           // Check if protection option is selected
-          return !!bookingState.flightProtectionType
+          return !!(bookingState.flightProtectionType && bookingState.flightProtectionType.trim() !== '')
         case 3:
           // Check if billing and payment info is filled
           const hasBillingInfo = bookingState.billing &&
-            bookingState.billing.streetAddress &&
-            bookingState.billing.country &&
-            bookingState.billing.stateRegion &&
-            bookingState.billing.city &&
-            bookingState.billing.zipCode
+            bookingState.billing.streetAddress && bookingState.billing.streetAddress.trim() !== '' &&
+            bookingState.billing.country && bookingState.billing.country.trim() !== '' &&
+            bookingState.billing.stateRegion && bookingState.billing.stateRegion.trim() !== '' &&
+            bookingState.billing.city && bookingState.billing.city.trim() !== '' &&
+            bookingState.billing.zipCode && bookingState.billing.zipCode.trim() !== ''
           
           const hasCardInfo = bookingState.card &&
-            bookingState.card.number &&
-            bookingState.card.expiry &&
-            bookingState.card.cvc &&
-            bookingState.card.name
+            bookingState.card.number && bookingState.card.number.trim() !== '' &&
+            bookingState.card.expiry && bookingState.card.expiry.trim() !== '' &&
+            bookingState.card.cvc && bookingState.card.cvc.trim() !== '' &&
+            bookingState.card.name && bookingState.card.name.trim() !== ''
           
           return !!(hasBillingInfo && hasCardInfo)
         default:
