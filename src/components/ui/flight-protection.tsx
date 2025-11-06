@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Check, Shield, Star, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useBooking } from '@/contexts/BookingContext'
 
 interface ProtectionOption {
   id: string
@@ -102,11 +103,14 @@ interface FlightProtectionProps {
 }
 
 export function FlightProtection({ onSelectionChange }: FlightProtectionProps) {
+  const { setFlightProtection } = useBooking()
   const [selectedOption, setSelectedOption] = useState<string>('')
 
   const handleOptionSelect = (optionId: string) => {
     setSelectedOption(optionId)
     onSelectionChange?.(optionId)
+    // Set flight protection flag based on selected option
+    setFlightProtection(optionId !== 'none')
   }
 
   return (

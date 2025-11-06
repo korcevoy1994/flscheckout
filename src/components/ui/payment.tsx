@@ -395,6 +395,8 @@ interface PaymentProps {
   onEditFlight?: () => void
   onEditContact?: () => void
   onEditPassenger?: () => void
+  onPay?: () => void
+  isFormValid?: boolean
 }
 
 // Mock data - в реальном приложении это будет приходить из props или состояния
@@ -448,7 +450,7 @@ const mockPassengersData = [
   }
 ]
 
-export function Payment({ className, onEditFlight, onEditContact, onEditPassenger }: PaymentProps) {
+export function Payment({ className, onEditFlight, onEditContact, onEditPassenger, onPay, isFormValid = false }: PaymentProps) {
   const [isFlightModalOpen, setIsFlightModalOpen] = useState(false)
   const [isPassengerModalOpen, setIsPassengerModalOpen] = useState(false)
   const [selectedPassenger, setSelectedPassenger] = useState<number | null>(null)
@@ -1320,6 +1322,18 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
               </div>
             </CardContent>
           </Card>
+
+          {/* Pay Button - Desktop only */}
+          <div className="hidden lg:block mt-6">
+            <Button
+              onClick={onPay}
+              disabled={!isFormValid}
+              className="w-full bg-[#EC5E39] hover:bg-[#d54e2a] text-white py-6 px-8 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group min-h-[60px] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+            >
+              Pay
+              <CreditCard className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -1436,8 +1450,8 @@ export function Payment({ className, onEditFlight, onEditContact, onEditPassenge
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                     {mockFlightData.transit.airport}
                   </p>
-                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <div className="bg-[#0abab5]/10 dark:bg-[#0abab5]/20 border border-[#0abab5]/30 rounded-lg p-3">
+                    <p className="text-sm text-[#0abab5] dark:text-[#0abab5]">
                       {mockFlightData.transit.description}
                     </p>
                   </div>

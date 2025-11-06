@@ -16,7 +16,7 @@ import { useBooking } from "@/contexts/BookingContext"
 
 export default function Home() {
   // Get booking context
-  const { bookingState, setCurrentStep: setContextCurrentStep } = useBooking()
+  const { bookingState, setCurrentStep: setContextCurrentStep, setFlightProtectionType } = useBooking()
   
   // Use currentStep from context, with fallback to local state for initial load
   const [localCurrentStep, setLocalCurrentStep] = useState(1)
@@ -30,7 +30,6 @@ export default function Home() {
   }, [bookingState.currentStep, localCurrentStep])
   
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [selectedProtection, setSelectedProtection] = useState<string>('')
   const [isFormValid, setIsFormValid] = useState(false)
 
   // Validate form based on current step
@@ -45,7 +44,7 @@ export default function Home() {
           return hasContactInfo && hasPassengerData
         case 2:
           // Check if protection option is selected
-          return !!selectedProtection
+          return !!bookingState.flightProtectionType
         case 3:
           // Check if billing and payment info is filled
           const hasBillingInfo = bookingState.billing &&
@@ -68,7 +67,7 @@ export default function Home() {
     }
     
     setIsFormValid(validateForm())
-  }, [currentStep, bookingState, selectedProtection])
+  }, [currentStep, bookingState])
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -91,14 +90,14 @@ export default function Home() {
   }
 
   const handleContinueToPayment = () => {
-    if (selectedProtection) {
+    if (bookingState.flightProtectionType) {
       setContextCurrentStep(3)
       setLocalCurrentStep(3)
     }
   }
 
   const handleProtectionSelection = (option: string) => {
-    setSelectedProtection(option)
+    setFlightProtectionType(option)
   }
 
   const handleEditFlight = () => {
@@ -207,9 +206,10 @@ export default function Home() {
                     
                     {/* Continue button - Desktop only */}
                     <div className="hidden lg:block">
-                      <Button 
+                      <Button
                         onClick={handleContinueToProtection}
-                        className="w-full bg-[#EC5E39] hover:bg-[#d54e2a] text-white py-6 px-8 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group min-h-[60px]"
+                        disabled={!isFormValid}
+                        className="w-full bg-[#EC5E39] hover:bg-[#d54e2a] text-white py-6 px-8 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group min-h-[60px] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
                       >
                         Continue to Flight Protection
                         <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -245,7 +245,7 @@ export default function Home() {
                   <Button
                     onClick={handleContinueToPayment}
                     size="lg"
-                    disabled={!selectedProtection}
+                    disabled={!bookingState.flightProtectionType}
                     className="flex items-center px-6 py-3 bg-[#EC5E39] hover:bg-[#d54e2a] text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
                   >
                     Continue to Payment
@@ -258,10 +258,14 @@ export default function Home() {
             {/* Step 3: Payment */}
             {currentStep === 3 && (
               <div className="space-y-6">
-                <Payment 
+                <Payment
                   onEditFlight={handleEditFlight}
                   onEditContact={handleEditContact}
                   onEditPassenger={handleEditPassenger}
+                  onPay={() => {
+                    console.log('Processing payment...')
+                  }}
+                  isFormValid={isFormValid}
                 />
                 
                 {/* Navigation buttons - Desktop only */}
@@ -283,7 +287,13 @@ export default function Home() {
           {/* Right column - BookingSummary (Desktop only) */}
           <div className="hidden lg:block lg:col-span-1">
             <div className="sticky top-8">
-              <BookingSummary />
+              <BookingSummary
+                onPay={() => {
+                  console.log('Processing payment...')
+                }}
+                isFormValid={isFormValid}
+                currentStep={currentStep}
+              />
             </div>
           </div>
         </div>

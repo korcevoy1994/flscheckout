@@ -66,6 +66,7 @@ export interface BookingState {
   card: CardData | null
   currentStep: number
   flightProtection: boolean
+  flightProtectionType: string
 }
 
 interface BookingContextType {
@@ -80,6 +81,7 @@ interface BookingContextType {
   removePassenger: (passengerId: number) => void
   getPassenger: (passengerId: number) => PassengerData | undefined
   setFlightProtection: (enabled: boolean) => void
+  setFlightProtectionType: (type: string) => void
 }
 
 const BookingContext = createContext<BookingContextType | undefined>(undefined)
@@ -149,7 +151,8 @@ const getDefaultBookingState = (): BookingState => ({
   billing: null,
   card: null,
   currentStep: 1,
-  flightProtection: false
+  flightProtection: false,
+  flightProtectionType: ''
 })
 
 // Load booking state from localStorage
@@ -283,6 +286,13 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
     }))
   }, [])
 
+  const setFlightProtectionType = useCallback((type: string) => {
+    setBookingState(prev => ({
+      ...prev,
+      flightProtectionType: type
+    }))
+  }, [])
+
   const value: BookingContextType = {
     bookingState,
     updatePassenger,
@@ -294,7 +304,8 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) =>
     addPassenger,
     removePassenger,
     getPassenger,
-    setFlightProtection
+    setFlightProtection,
+    setFlightProtectionType
   }
 
   return (

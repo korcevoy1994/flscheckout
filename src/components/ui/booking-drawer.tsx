@@ -23,8 +23,17 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose }) => {
 
   // Use the same calculations as desktop BookingSummary
   const baseFare = 1245
-  const flightProtectionCost = 45
-  const total = baseFare + (bookingState.flightProtection ? flightProtectionCost : 0)
+  const getProtectionCost = () => {
+    if (!bookingState.flightProtectionType) return 0
+    switch (bookingState.flightProtectionType) {
+      case 'luxe': return 485.10
+      case 'classic': return 29
+      case 'none': return 0
+      default: return 0
+    }
+  }
+  const flightProtectionCost = getProtectionCost()
+  const total = baseFare + flightProtectionCost
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
@@ -75,14 +84,18 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose }) => {
             
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Base fare</span>
+                <span className="text-gray-600 dark:text-gray-400">Base fare (3 passengers)</span>
                 <span className="text-gray-900 dark:text-white font-medium">${baseFare}</span>
               </div>
               
-              {bookingState.flightProtection && (
+              {bookingState.flightProtectionType && (
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Flight protection</span>
-                  <span className="text-gray-900 dark:text-white font-medium">${flightProtectionCost}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Flight protection ({bookingState.flightProtectionType === 'luxe' ? 'LUXE' : bookingState.flightProtectionType === 'classic' ? 'CLASSIC' : 'NO PROTECTION'})
+                  </span>
+                  <span className="text-gray-900 dark:text-white font-medium">
+                    {bookingState.flightProtectionType === 'luxe' ? '+$485.10' : bookingState.flightProtectionType === 'classic' ? '$29' : '$0'}
+                  </span>
                 </div>
               )}
               
@@ -103,7 +116,7 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose }) => {
               Book With Confidence
             </div>
             
-            <div className="space-y-2 text-xs">
+            <div className="space-y-1.5 text-xs">
               <div className="flex items-start gap-2">
                 <Shield className="w-3 h-3 mt-0.5 flex-shrink-0" style={{ color: '#0ABAB5' }} />
                 <span className="text-gray-600 dark:text-gray-400">Taxes and fees included</span>
@@ -121,8 +134,8 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose }) => {
 
           <Separator className="dark:bg-gray-700" />
 
-          {/* Security & Support */}
-          <div className="space-y-3">
+          {/* Security & Support - Compact */}
+          <div className="space-y-1.5">
             <div className="flex items-start gap-2">
               <Lock className="w-3 h-3 mt-0.5 flex-shrink-0" style={{ color: '#0ABAB5' }} />
               <div>
@@ -135,13 +148,12 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose }) => {
               <Phone className="w-3 h-3 mt-0.5 flex-shrink-0" style={{ color: '#0ABAB5' }} />
               <div>
                 <div className="text-xs font-medium text-gray-900 dark:text-white">24/7 Support</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Call us anytime at{' '}
-                  <a 
-                    href="tel:+15551234567" 
-                    className="text-[#0ABAB5] hover:text-[#0ABAB5]/80 underline transition-colors"
+                <div className="text-xs font-medium">
+                  <a
+                    href="tel:+18888307444"
+                    className="text-[#0ABAB5] hover:text-[#0ABAB5]/80 transition-colors"
                   >
-                    +1 (555) 123-4567
+                    +1 888 830 7444
                   </a>
                 </div>
               </div>

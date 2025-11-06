@@ -199,8 +199,8 @@ export function FlightDetails({ className }: FlightDetailsProps) {
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                     {flightData.transit.airport}
                   </p>
-                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <div className="bg-[#0abab5]/10 dark:bg-[#0abab5]/20 border border-[#0abab5]/30 rounded-lg p-3">
+                    <p className="text-sm text-[#0abab5] dark:text-[#0abab5]">
                       {flightData.transit.description}
                     </p>
                   </div>

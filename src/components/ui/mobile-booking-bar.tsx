@@ -29,8 +29,17 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({
 
   // Use the same calculations as desktop BookingSummary
   const baseFare = 1245
-  const flightProtectionCost = 45
-  const total = baseFare + (bookingState.flightProtection ? flightProtectionCost : 0)
+  const getProtectionCost = () => {
+    if (!bookingState.flightProtectionType) return 0
+    switch (bookingState.flightProtectionType) {
+      case 'luxe': return 485.10
+      case 'classic': return 29
+      case 'none': return 0
+      default: return 0
+    }
+  }
+  const flightProtectionCost = getProtectionCost()
+  const total = baseFare + flightProtectionCost
 
   // Determine button text based on step
   const getContinueButtonText = () => {
@@ -49,7 +58,7 @@ const MobileBookingBar: React.FC<MobileBookingBarProps> = ({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-bar">
+    <div className="fixed bottom-0 left-0 right-0 z-20 lg:hidden mobile-bottom-bar">
       {/* Ultra-modern backdrop with subtle gradient - dark theme support */}
       <div className="absolute inset-0 bg-gradient-to-t from-white via-white/98 to-white/95 dark:from-gray-900 dark:via-gray-900/98 dark:to-gray-900/95 backdrop-blur-2xl" />
       

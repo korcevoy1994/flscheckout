@@ -650,7 +650,7 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg" suppressHydrationWarning>
+              <div className="w-12 h-12 bg-[#0fbab5] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg aspect-square" suppressHydrationWarning style={{ aspectRatio: '1/1' }}>
                 {getPassengerInitials()}
               </div>
               <div>
@@ -760,7 +760,7 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
                             <SelectTrigger className={getInputClassName('title', 'h-12 text-base')}>
                               <SelectValue placeholder="Select title" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
+                            <SelectContent>
                               <SelectItem value="Mr" className="hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">Mr</SelectItem>
                               <SelectItem value="Mrs" className="hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">Mrs</SelectItem>
                               <SelectItem value="Ms" className="hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">Ms</SelectItem>
@@ -789,7 +789,7 @@ export default function PassengerDetails({ passengerNumber }: PassengerDetailsPr
                             <SelectTrigger className={getInputClassName('gender', 'h-12 text-base')}>
                               <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
+                            <SelectContent>
                               <SelectItem value="Male" className="hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">Male</SelectItem>
                               <SelectItem value="Female" className="hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">Female</SelectItem>
                               <SelectItem value="Other" className="hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">Other</SelectItem>

@@ -373,7 +373,7 @@ export function ContactInformation({ className }: ContactInformationProps) {
 
     const debounceTimer = setTimeout(validateEmail, 300)
     return () => clearTimeout(debounceTimer)
-  }, [phoneDigitsOnly, selectedCountry])
+  }, [formData.email])
 
   // Synchronize with BookingContext when form data changes
   const syncContactData = useCallback(() => {

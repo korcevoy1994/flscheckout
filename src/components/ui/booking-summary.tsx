@@ -3,16 +3,36 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Plane, Users, CreditCard, Clock, Lock, Phone, CheckCircle } from 'lucide-react'
 import { useBooking } from '@/contexts/BookingContext'
 
-export default function BookingSummary() {
+interface BookingSummaryProps {
+  onPay?: () => void
+  isFormValid?: boolean
+  currentStep?: number
+}
+
+export default function BookingSummary({
+  onPay,
+  isFormValid = false,
+  currentStep = 1
+}: BookingSummaryProps) {
   const { bookingState } = useBooking()
   
   // Calculate total based on flight protection
   const baseFare = 1245
-  const flightProtectionCost = 45
-  const total = baseFare + (bookingState.flightProtection ? flightProtectionCost : 0)
+  const getProtectionCost = () => {
+    if (!bookingState.flightProtectionType) return 0
+    switch (bookingState.flightProtectionType) {
+      case 'luxe': return 485.10
+      case 'classic': return 29
+      case 'none': return 0
+      default: return 0
+    }
+  }
+  const flightProtectionCost = getProtectionCost()
+  const total = baseFare + flightProtectionCost
 
   return (
     <div className="w-full max-w-xs">
@@ -54,10 +74,14 @@ export default function BookingSummary() {
                 <span className="text-gray-900 dark:text-white">${baseFare}</span>
               </div>
               {/* Flight protection shown only when selected */}
-              {bookingState.flightProtection && (
+              {bookingState.flightProtectionType && (
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Flight protection</span>
-                  <span className="text-gray-900 dark:text-white">${flightProtectionCost}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Flight protection ({bookingState.flightProtectionType === 'luxe' ? 'LUXE' : bookingState.flightProtectionType === 'classic' ? 'CLASSIC' : 'NO PROTECTION'})
+                  </span>
+                  <span className="text-gray-900 dark:text-white font-medium">
+                    {bookingState.flightProtectionType === 'luxe' ? '+$485.10' : bookingState.flightProtectionType === 'classic' ? '$29' : '$0'}
+                  </span>
                 </div>
               )}
             </div>
@@ -121,6 +145,20 @@ export default function BookingSummary() {
               </div>
             </div>
           </div>
+
+          {/* Pay button - only show on payment step */}
+          {currentStep === 3 && (
+            <div className="pt-4">
+              <Button
+                onClick={onPay}
+                disabled={!isFormValid}
+                className="w-full bg-[#EC5E39] hover:bg-[#d54e2a] text-white py-6 px-8 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group min-h-[60px] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+              >
+                Pay
+                <CreditCard className="w-5 h-5" />
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
